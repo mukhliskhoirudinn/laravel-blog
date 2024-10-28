@@ -6,11 +6,10 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="Ilham Lutfi | ilhamlutfi.github.io">
     <meta name="keyword" content="{{ $article->keywords }}">
-    <meta name="description"
-        content="{{ Str::limit($article->content, 200, '...') }}">
+    <meta name="description" content="{{ Str::limit($article->content, 200, '...') }}">
     <meta property="og:title" content="{{ $article->title }}">
-    <meta property="og:image" content="{{ url(asset('storage/images/'. $article->image)) }}">
-    <meta name="image" content="{{ url(asset('storage/images/'. $article->image)) }}">
+    <meta property="og:image" content="{{ url(asset('storage/images/' . $article->image)) }}">
+    <meta name="image" content="{{ url(asset('storage/images/' . $article->image)) }}">
 @endpush
 
 @push('css')
@@ -77,27 +76,27 @@
                                         class="fab fa-facebook-f link-hover btn btn-square rounded-circle border-primary text-dark me-2"></i>
                                 </a>
 
-                                <a href="https://api.whatsapp.com/send?text={{ url()->current() }}" target="_blank" title="Share on WhatsApp">
+                                <a href="https://api.whatsapp.com/send?text={{ url()->current() }}" target="_blank"
+                                    title="Share on WhatsApp">
                                     <i
                                         class="btn fab fa-whatsapp link-hover btn btn-square rounded-circle border-primary text-dark me-2"></i>
                                 </a>
 
-                                <i
-                                    class="btn fas fa-copy link-hover btn btn-square rounded-circle border-primary text-dark copy-url" title="Copy URL"></i>
+                                <i class="btn fas fa-copy link-hover btn btn-square rounded-circle border-primary text-dark copy-url"
+                                    title="Copy URL"></i>
                             </div>
                         </div>
                         <div class="tab-content">
                             <div id="tab-1" class="tab-pane fade show active">
                                 <div class="row g-4 align-items-center">
                                     <div class="col-3">
-                                        <img src="https://mubatekno.com/ilham-min.webp" class="img-fluid w-100 rounded"
-                                            alt="">
+                                        <img src="{{ asset('assets/frontend') }}/img/p1.jpg"
+                                            class="img-fluid w-100 rounded" alt="">
                                     </div>
                                     <div class="col-9">
                                         <h3>{{ $article->user->name }}</h3>
-                                        <p class="mb-0">Saya Backend Web Developer berpengalaman dengan keahlian dalam
-                                            Laravel, CodeIgniter 4, Adonis Js, Bootstrap, jQuery, MySQL/MariaDB, dan
-                                            pengelolaan Server web atau Web hosting. Saya siap untuk memberikan kontribusi
+                                        <p class="mb-0">Saya Backend Web Developer berpengalaman dalam dunia web. Saya
+                                            siap untuk memberikan kontribusi
                                             yang berarti dalam proyek Anda dengan keahlian dan semangat yang saya miliki.
                                         </p>
                                     </div>
