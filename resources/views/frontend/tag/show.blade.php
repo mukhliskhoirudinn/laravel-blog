@@ -4,7 +4,7 @@
 
 @push('meta')
     <meta name="robots" content="index, follow">
-    <meta name="author" content="Ilham Lutfi | ilhamlutfi.github.io">
+    <meta name="author" content="Mukhlis Khoirudin | mukhliskhoirudinn.github.io">
     <meta name="keyword" content="{{ $tag->name }} MyBlog, Blog Technology">
     <meta name="description"
         content="MyBlog is a blog that shares knowledge about technology, programming, and web development.">

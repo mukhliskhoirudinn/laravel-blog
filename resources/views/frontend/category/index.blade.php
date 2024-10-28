@@ -4,9 +4,10 @@
 
 @push('meta')
     <meta name="robots" content="index, follow">
-    <meta name="author" content="Ilham Lutfi | ilhamlutfi.github.io">
+    <meta name="author" content="Mukhlis Khoirudin | mukhliskhoirudinn.github.io">
     <meta name="keyword" content="Category MyBlog, Blog Technology">
-    <meta name="description" content="MyBlog is a blog that shares knowledge about technology, programming, and web development.">
+    <meta name="description"
+        content="MyBlog is a blog that shares knowledge about technology, programming, and web development.">
     <meta property="og:title" content="MyBlog">
     <meta property="og:image" content="contoh.jpg">
     <meta name="image" content="contoh.jpg">
@@ -28,7 +29,7 @@
             </ol>
             <div class="row g-4">
                 <div class="col-lg-8">
-                     <div class="mb-4">
+                    <div class="mb-4">
                         <a href="#" class="h1 display-5">All Category</a>
                     </div>
 
@@ -40,7 +41,9 @@
                                         <a href="{{ route('category.show', $category->slug) }}">
                                             <div class="card bg-light mb-3">
                                                 <div class="card-body text-center p-4">
-                                                    <h5 class="card-title mb-0">{{ $category->name }} ({{ $category->total_articles }})</h5>
+                                                    <h5 class="card-title mb-0">{{ $category->name }}
+                                                        ({{ $category->total_articles }})
+                                                    </h5>
                                                 </div>
                                             </div>
                                         </a>
