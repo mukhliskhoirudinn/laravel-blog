@@ -25,7 +25,9 @@ class ArticleController extends Controller
      */
     public function index(): View
     {
-        return view('backend.articles.index');
+        $articles = Article::with(['category', 'tags'])->get(); // Ambil semua artikel dengan relasi category dan tags
+        return view('backend.articles.index', compact('articles'));
+        // return view('backend.articles.index');
     }
 
     /**
@@ -103,9 +105,9 @@ class ArticleController extends Controller
         $getArticle = $this->articleService->getFirstBy('uuid', $uuid);
 
         try {
-           if ($request->hasFile('image')) {
+            if ($request->hasFile('image')) {
                 $data['image'] = $this->imageService->storeImage($data, $getArticle->image);
-           }
+            }
 
             $this->articleService->update($data, $uuid);
 
@@ -163,4 +165,29 @@ class ArticleController extends Controller
     {
         return $this->articleService->dataTable($request);
     }
+
+    //
+    public function confirm($uuid)
+    {
+        $article = Article::where('uuid', $uuid)->firstOrFail();
+
+        // Update status konfirmasi
+        $article->is_confirm = true;
+        $article->save();
+
+        return redirect()->back()->with('success', 'Article confirmed successfully!');
+    }
+
+    public function cancelConfirm($uuid)
+    {
+        $article = Article::where('uuid', $uuid)->firstOrFail();
+
+        // Update status konfirmasi
+        $article->is_confirm = false;
+        $article->save();
+
+        return redirect()->back()->with('success', 'Article confirmation canceled successfully!');
+    }
+    //
+
 }

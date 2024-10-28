@@ -21,6 +21,7 @@ return new class extends Migration
             $table->longText('content');
             $table->boolean('published')->default(false);
             $table->date('published_at')->nullable();
+            $table->boolean('is_confirm');
             $table->string('image');
             $table->string('keywords');
             $table->integer('views')->default(0);

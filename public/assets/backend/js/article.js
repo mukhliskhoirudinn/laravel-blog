@@ -13,35 +13,39 @@ function articleTable() {
         // pageLength: 20, // set default records per page
         ajax: "/admin/articles/serverside",
         columns: [{
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex'
-            },
-            {
-                data: 'title',
-                name: 'title'
-            },
-            {
-                data: 'category_id',
-                name: 'category_id'
-            },
-            {
-                data: 'tag_id',
-                name: 'tag_id'
-            },
-            {
-                data: 'views',
-                name: 'views'
-            },
-            {
-                data: 'published',
-                name: 'published'
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: true,
-                searchable: true
-            },
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex'
+        },
+        {
+            data: 'title',
+            name: 'title'
+        },
+        {
+            data: 'category_id',
+            name: 'category_id'
+        },
+        {
+            data: 'tag_id',
+            name: 'tag_id'
+        },
+        {
+            data: 'views',
+            name: 'views'
+        },
+        {
+            data: 'published',
+            name: 'published'
+        },
+        {
+            data: 'is_confirm',
+            name: 'is_confirm',
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: true,
+            searchable: true
+        },
         ]
     });
 };

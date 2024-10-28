@@ -23,7 +23,8 @@ class Article extends Model
         'published',
         'published_at',
         'image',
-        'keywords'
+        'keywords',
+        'is_confirm',
     ];
 
     public static function booted()
@@ -56,5 +57,4 @@ class Article extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
-
 }

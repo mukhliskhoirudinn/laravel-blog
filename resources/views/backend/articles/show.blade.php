@@ -65,6 +65,17 @@
                             @endif
 
                             <tr>
+                                <th>Confirmation Status</th>
+                                <td>
+                                    @if ($article->is_confirm)
+                                        <i class="fas fa-check-circle text-success"></i> Confirmed
+                                    @else
+                                        <i class="fas fa-times-circle text-danger"></i> Not Confirmed
+                                    @endif
+                                </td>
+                            </tr>
+
+                            <tr>
                                 <th>Views</th>
                                 <td>{{ $article->views }}</td>
                             </tr>
@@ -95,12 +106,30 @@
                                 <a href="{{ route('admin.articles.restore', $article->uuid) }}" class="btn btn-warning"><i
                                         class="fas fa-undo"></i> Restore</a>
 
-                                <button type="button" class="btn btn-danger" onclick="deleteForceData(this)" data-id="{{ $article->uuid }}"><i
-                                        class="fas fa-trash-alt"></i> Force Delete</button>
+                                <button type="button" class="btn btn-danger" onclick="deleteForceData(this)"
+                                    data-id="{{ $article->uuid }}"><i class="fas fa-trash-alt"></i> Force Delete</button>
+                            @endif
+
+                            {{-- Cek apakah artikel tidak di-soft delete --}}
+                            @if (auth()->user()->hasRole('owner') && $article->deleted_at == null)
+                                @if ($article->is_confirm)
+                                    <form action="{{ route('admin.articles.cancelConfirm', $article->uuid) }}"
+                                        method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-warning"><i class="fas fa-times"></i> Cancel
+                                            Confirmation</button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('admin.articles.confirm', $article->uuid) }}" method="POST"
+                                        style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> Confirm
+                                            Article</button>
+                                    </form>
+                                @endif
                             @endif
                         </div>
                     </div>
-
                 </x-card>
             </div>
         </div>

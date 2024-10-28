@@ -20,6 +20,7 @@ class ArticleService
             $limit = $request->length;
             $start = $request->start;
 
+            // Ambil data artikel berdasarkan peran pengguna
             if (empty($request->search['value'])) {
                 if (auth()->user()->hasRole('owner')) {
                     $data = Article::latest()
@@ -27,14 +28,15 @@ class ArticleService
                         ->offset($start)
                         ->limit($limit)
                         ->withTrashed()
-                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'published', 'deleted_at']);
+                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'is_confirm', 'published', 'deleted_at']);
                 } else {
                     $data = Article::latest()
                         ->with('category:id,name', 'tags:id,name')
                         ->offset($start)
                         ->limit($limit)
                         ->where('user_id', auth()->user()->id)
-                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'published', 'deleted_at']);
+                        //
+                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'is_confirm', 'published', 'deleted_at']);
                 }
             } else {
                 if (auth()->user()->hasRole('owner')) {
@@ -44,7 +46,7 @@ class ArticleService
                         ->offset($start)
                         ->limit($limit)
                         ->withTrashed()
-                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'published', 'deleted_at']);
+                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'is_confirm', 'published', 'deleted_at']);
                 } else {
                     $data = Article::filter($request->search['value'])
                         ->latest()
@@ -52,7 +54,7 @@ class ArticleService
                         ->offset($start)
                         ->limit($limit)
                         ->where('user_id', auth()->user()->id)
-                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'published', 'deleted_at']);
+                        ->get(['id', 'uuid', 'title', 'category_id', 'views', 'is_confirm', 'published', 'deleted_at']);
                 }
 
                 $totalFiltered = $data->count();
@@ -74,46 +76,40 @@ class ArticleService
                     </div>';
                 })
                 ->editColumn('published', function ($data) {
-                    if ($data->published == 1) {
-                        return '<span class="badge bg-success">Published</span>';
-                    } else {
-                        return '<span class="badge bg-danger">Draft</span>';
-                    }
+                    return $data->published == 1
+                        ? '<span class="badge bg-success">Published</span>'
+                        : '<span class="badge bg-danger">Draft</span>';
                 })
                 ->editColumn('views', function ($data) {
                     return '<span class="badge bg-secondary">' . $data->views . 'x</span>';
                 })
+                ->editColumn('is_confirm', function ($data) {
+                    return $data->is_confirm
+                        ? '<span class="badge bg-success">Confirmed</span>'
+                        : '<span class="badge bg-danger">Not Confirmed</span>';
+                })
                 ->addColumn('tag_id', function ($data) {
-                    $tagsHtml = '';
-
-                    foreach ($data->tags as $tag) {
-                        $tagsHtml .= '<span class="badge bg-secondary ms-1">' . $tag->name . '</span>';
-                    }
-
-                    return $tagsHtml;
+                    return $data->tags->map(function ($tag) {
+                        return '<span class="badge bg-secondary ms-1">' . $tag->name . '</span>';
+                    })->implode('');
                 })
                 ->addColumn('action', function ($data) {
-                    $actionBtn = '
+                    return '
                     <div class="text-center" width="10%">
                         <div class="btn-group">
-                            <a href="' . route('admin.articles.show', $data->uuid) . '"  class="btn btn-sm btn-secondary">
+                            <a href="' . route('admin.articles.show', $data->uuid) . '" class="btn btn-sm btn-secondary">
                                 <i class="fas fa-eye"></i>
                             </a>
-
-                            <a href="' . route('admin.articles.edit', $data->uuid) . '"  class="btn btn-sm btn-success">
+                            <a href="' . route('admin.articles.edit', $data->uuid) . '" class="btn btn-sm btn-success">
                                 <i class="fas fa-edit"></i>
                             </a>
-
                             <button type="button" class="btn btn-sm btn-danger" onclick="deleteData(this)" data-id="' . $data->uuid . '">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
-                    </div>
-                ';
-
-                    return $actionBtn;
+                    </div>';
                 })
-                ->rawColumns(['title', 'category_id', 'tag_id', 'published', 'views', 'action'])
+                ->rawColumns(['title', 'category_id', 'tag_id', 'published', 'views', 'is_confirm', 'action'])
                 ->with([
                     'recordsTotal' => $totalData,
                     'recordsFiltered' => $totalFiltered,
@@ -149,10 +145,9 @@ class ArticleService
         $data['slug'] = Str::slug($data['title']);
 
         if ($data['published'] == 1) {
-            $data['published_at'] = date('Y-m-d');
+            $data['published_at'] = now();
         }
 
-        // insert article_tag
         $article = Article::create($data);
         $article->tags()->sync($data['tag_id']);
 
@@ -164,10 +159,9 @@ class ArticleService
         $data['slug'] = Str::slug($data['title']);
 
         if ($data['published'] == 1) {
-            $data['published_at'] = date('Y-m-d');
+            $data['published_at'] = now();
         }
 
-        // insert article_tag
         $article = Article::where('uuid', $uuid)->firstOrFail();
         $article->update($data);
         $article->tags()->sync($data['tag_id']);
@@ -178,10 +172,6 @@ class ArticleService
     public function delete(string $uuid)
     {
         $getArticle = $this->getFirstBy('uuid', $uuid);
-
-        // Storage::disk('public')->delete('images/' . $getArticle->image);
-
-        // $getArticle->tags()->detach();
         $getArticle->tags()->updateExistingPivot($getArticle->tags, ['deleted_at' => now()]); // soft delete
         $getArticle->delete(); // soft delete
 
@@ -199,9 +189,7 @@ class ArticleService
     public function forceDelete(string $uuid)
     {
         $getArticle = $this->getFirstBy('uuid', $uuid);
-
         Storage::disk('public')->delete('images/' . $getArticle->image);
-
         $getArticle->tags()->detach(); // force delete
         $getArticle->forceDelete(); // force delete
 

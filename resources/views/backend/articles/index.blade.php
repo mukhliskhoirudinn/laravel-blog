@@ -24,6 +24,7 @@
                                     <th>Tag</th>
                                     <th>Views</th>
                                     <th>Status</th>
+                                    <th>Confirmation Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

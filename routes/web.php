@@ -17,12 +17,12 @@ Route::get('/', [HomeController::class, 'index'])->name('frontend.home');
 Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::resource('article', FrontendArticleController::class)
-->only('index', 'show')
-->names('articles');
+    ->only('index', 'show')
+    ->names('articles');
 
 Route::resource('category', FrontendCategoryController::class)
-->only('index', 'show')
-->names('category');
+    ->only('index', 'show')
+    ->names('category');
 
 Route::get('tag/{slug}', [FrontendTagController::class, 'showByTag'])->name('frontend.tag');
 
@@ -37,6 +37,10 @@ Route::prefix('admin')->group(function () {
     Route::delete('articles/force-delete/{uuid}', [ArticleController::class, 'forceDelete']);
     Route::resource('articles', ArticleController::class)
         ->names('admin.articles');
+    // 
+    Route::post('admin/articles/{uuid}/confirm', [ArticleController::class, 'confirm'])->name('admin.articles.confirm');
+    Route::post('admin/articles/{uuid}/cancel-confirm', [ArticleController::class, 'cancelConfirm'])->name('admin.articles.cancelConfirm');
+    // 
 
     // categories
     Route::get('categories/serverside', [CategoryController::class, 'serverside'])->name('admin.categories.serverside');
