@@ -1,7 +1,7 @@
 <!-- Latest News Start -->
 <div class="container-fluid latest-news py-5">
     <div class="container py-5">
-        <h2 class="mb-4 text-center">Latest News</h2>
+        <h2 class="mb-4 text-start">Latest News</h2>
         <div class="latest-news-carousel owl-carousel">
             @foreach ($latest_articles as $article)
                 <div class="latest-news-item">
@@ -10,7 +10,7 @@
                             alt="{{ $article->title }}">
                         <div class="p-4">
                             <a href="{{ route('articles.show', $article->slug) }}"
-                                class="h5 text-dark">{{ $article->title }}</a>
+                                class="h5 text-dark">{{ Str::limit($article->title, 40, '...') }} </a>
                             <div class="d-flex justify-content-between mt-2">
                                 <a href="#" class="small text-body link-hover">
                                     by {{ optional($article->user)->name ?? 'Unknown' }}
