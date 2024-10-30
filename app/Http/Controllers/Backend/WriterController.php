@@ -10,7 +10,8 @@ use App\Http\Services\Backend\WriterService;
 
 class WriterController extends Controller
 {
-    public function __construct(private WriterService $writerService) {
+    public function __construct(private WriterService $writerService)
+    {
         $this->middleware('owner');
     }
 
@@ -22,5 +23,11 @@ class WriterController extends Controller
     public function serverside(Request $request): JsonResponse
     {
         return $this->writerService->dataTable($request);
+    }
+
+    public function verify(Request $request, $id): JsonResponse
+    {
+        $result = $this->writerService->verifyWriter($id);
+        return response()->json(['message' => $result ? 'Writer verified successfully' : 'Failed to verify writer']);
     }
 }

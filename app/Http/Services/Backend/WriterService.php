@@ -40,22 +40,32 @@ class WriterService
                 ->editColumn('is_verified', function ($data) {
                     return $data->is_verified ? '<span class="badge bg-success">' . date('d-m-Y H:i:s', strtotime($data->is_verified)) . '</span>' : '<span class="badge bg-danger">Unverified</span>';
                 })
+
                 ->addColumn('action', function ($data) {
                     $actionBtn = '
                     <div class="text-center" width="10%">
                         <div class="btn-group">
+
+                            ' . (!$data->is_verified ? '
+                            <button type="button" class="btn btn-sm btn-warning" onclick="verifyData(this)" data-id="' . $data->id . '">
+                                <i class="fas fa-check"></i>
+                            </button>' : '') . '
+
                             <button type="button" class="btn btn-sm btn-success" onclick="editData(this)" data-id="' . $data->id . '">
                                 <i class="fas fa-edit"></i>
                             </button>
+
                             <button type="button" class="btn btn-sm btn-danger" onclick="deleteData(this)" data-id="' . $data->id . '">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
+                            
                         </div>
                     </div>
-                ';
+                    ';
 
                     return $actionBtn;
                 })
+
                 ->with([
                     'recordsTotal' => $totalData,
                     'recordsFiltered' => $totalFiltered,
@@ -66,20 +76,12 @@ class WriterService
         }
     }
 
-    // public function getFirstBy(string $column, string $value)
-    // {
-    //     return Writer::where($column, $value)->firstOrFail();
-    // }
+    public function verifyWriter($id)
+    {
+        $user = User::findOrFail($id);
+        $user->is_verified = now(); // Atur waktu verifikasi
+        $user->save();
 
-    // public function create(array $data)
-    // {
-    //     $data['slug'] = Str::slug($data['name']);
-    //     return Writer::create($data);
-    // }
-
-    // public function update(array $data, string $uuid)
-    // {
-    //     $data['slug'] = Str::slug($data['name']);
-    //     return Writer::where('uuid', $uuid)->update($data);
-    // }
+        return response()->json(['message' => 'Writer verified successfully.']);
+    }
 }

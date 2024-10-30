@@ -19,11 +19,11 @@
                         <table class="table table-striped table-bordered table-striped" id="yajra" width="100%">
                             <thead>
                                 <tr>
-                                    <th width="1%">No</th>
+                                    <th>No</th>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th>Registered At</th>
-                                    <th>Verified</th>
+                                    <th>Created At</th>
+                                    <th>Verification Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -38,10 +38,11 @@
         </div>
     </div>
 
-    @include('backend.tags._modal')
+    @include('backend.writers._modal')
 @endsection
 
 @push('js')
+    <script src="{{ asset('js/writer.js') }}"></script>
     <script src="{{ asset('assets/backend/library/jquery/jquery-3.7.1.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>

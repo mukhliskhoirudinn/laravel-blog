@@ -13,112 +13,70 @@ function writerTable() {
         // pageLength: 20, // set default records per page
         ajax: "/admin/writers/serverside",
         columns: [{
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex'
-            },
-            {
-                data: 'name',
-                name: 'name'
-            },
-            {
-                data: 'email',
-                name: 'email'
-            },
-            {
-                data: 'created_at',
-                name: 'created_at'
-            },
-            {
-                data: 'is_verified',
-                name: 'is_verified'
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: true,
-                searchable: true
-            },
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex'
+        },
+        {
+            data: 'name',
+            name: 'name'
+        },
+        {
+            data: 'email',
+            name: 'email'
+        },
+        {
+            data: 'created_at',
+            name: 'created_at'
+        },
+        {
+            data: 'is_verified',
+            name: 'is_verified'
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: true,
+            searchable: true
+        },
         ]
     });
 };
 
-// form create
-const modalTag = () => {
-    submit_method = 'create';
-    resetForm('#formTag');
-    resetValidation();
-    $('#modalTag').modal('show');
-    $('.modal-title').html('<i class="fa fa-plus"></i> Create Tag');
-    $('.btnSubmit').html('<i class="fa fa-save"></i> Save');
-}
-
-// form edit
-const editData = (e) => {
-    let id = e.getAttribute('data-id');
-
-    startLoading();
-    resetForm('#formTag');
-    resetValidation();
-
-    $.ajax({
-        type: "GET",
-        url: "/admin/tags/" + id,
-        success: function (response) {
-            let parsedData = response.data;
-
-            $('#id').val(parsedData.uuid);
-            $('#name').val(parsedData.name);
-            $('#modalTag').modal('show');
-            $('.modal-title').html('<i class="fa fa-edit"></i> Edit Tag');
-            $('.btnSubmit').html('<i class="fa fa-save"></i> Save');
-
-            submit_method = 'edit';
-
-            stopLoading();
-        },
-        error: function (jqXHR, response) {
-            console.log(jqXHR.responseText);
-            toastError(jqXHR.responseText);
-        }
-    });
-}
-
-const deleteData = (e) => {
+const verifyData = (e) => {
     let id = e.getAttribute('data-id');
 
     Swal.fire({
         title: "Are you sure?",
-        text: "Do you want to delete this tag?",
+        text: "Do you want to verify this writer?",
         icon: "question",
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Delete",
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Verify",
         cancelButtonText: "Cancel",
         allowOutsideClick: false,
         showCancelButton: true,
         showCloseButton: true
     }).then((result) => {
-        startLoading();
-
         if (result.value) {
+            startLoading();
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                type: "DELETE",
-                url: "/admin/tags/" + id,
-                dataType: "json",
+                type: "POST",
+                url: "/admin/writers/" + id + "/verify",
                 success: function (response) {
                     reloadTable();
-
                     toastSuccess(response.message);
+                    stopLoading();
                 },
                 error: function (response) {
                     console.log(response);
+                    stopLoading();
                 }
             });
         }
-    })
+    });
 }
 
 // save data

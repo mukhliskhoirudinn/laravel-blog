@@ -60,6 +60,8 @@ Route::prefix('admin')->group(function () {
     Route::resource('writers', WriterController::class)
         ->only('index')
         ->names('admin.writers');
+
+    Route::post('writers/{id}/verify', [WriterController::class, 'verify'])->name('admin.writers.verify');
 });
 
 Auth::routes();
